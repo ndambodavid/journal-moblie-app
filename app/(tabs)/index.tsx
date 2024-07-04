@@ -4,6 +4,8 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import Button from '@/components/Button';
+import { router } from 'expo-router';
 
 const journals = [
   { id: '1', title: 'Journal 1' },
@@ -39,7 +41,8 @@ export default function HomeScreen() {
       }>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">My Journals</ThemedText>
-        <HelloWave />
+        {/* <HelloWave /> */}
+        <Button title="add" onPress={() => router.push("create-journal")}/>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
       <FlatList
