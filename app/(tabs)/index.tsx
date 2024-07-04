@@ -27,11 +27,12 @@ export default function HomeScreen() {
     <View style={styles.journalContainer}>
       <ThemedText style={styles.journalTitle}>{item.title}</ThemedText>
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button}
+          onPress={() => router.push({ pathname: "edit-journal", params: item })}>
           <ThemedText style={styles.buttonText}>Edit</ThemedText>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}
-         onPress={() => router.push({pathname:"view-journal", params: item})}>
+          onPress={() => router.push({ pathname: "view-journal", params: item })}>
           <ThemedText style={styles.buttonText}>View</ThemedText>
         </TouchableOpacity>
       </View>
