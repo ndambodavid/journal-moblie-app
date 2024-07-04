@@ -1,8 +1,9 @@
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import axios from 'axios';
+import Button from '@/components/Button';
 
 type Journal = {
   id?: string;
