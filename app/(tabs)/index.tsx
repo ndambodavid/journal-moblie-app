@@ -6,11 +6,18 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Button from '@/components/Button';
 import { router } from 'expo-router';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const journals = [
-  { id: '1', title: 'Journal 1' },
-  { id: '2', title: 'Journal 2' },
-  { id: '3', title: 'Journal 3' },
+  { id: '1', title: 'Journal 1', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
+  { id: '2', title: 'Journal 2', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
+  { id: '3', title: 'Journal 3', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
+  { id: '4', title: 'Journal 1', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
+  { id: '5', title: 'Journal 2', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
+  { id: '6', title: 'Journal 3', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
+  { id: '7', title: 'Journal 1', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
+  { id: '8', title: 'Journal 2', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
+  { id: '9', title: 'Journal 3', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
   // Add more journals as needed
 ];
 
@@ -23,7 +30,8 @@ export default function HomeScreen() {
         <TouchableOpacity style={styles.button}>
           <ThemedText style={styles.buttonText}>Edit</ThemedText>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button}
+         onPress={() => router.push({pathname:"view-journal", params: item})}>
           <ThemedText style={styles.buttonText}>View</ThemedText>
         </TouchableOpacity>
       </View>
@@ -42,21 +50,22 @@ export default function HomeScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">My Journals</ThemedText>
         {/* <HelloWave /> */}
-        <Button title="add" onPress={() => router.push("create-journal")}/>
+        <Button title="add" onPress={() => router.push("create-journal")} />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-      <FlatList
-        data={journals}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-      />
+        <FlatList
+          data={journals}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+          scrollEnabled={false}
+        />
       </ThemedView>
     </ParallaxScrollView>
   );
 }
 
 // const styles = StyleSheet.create({
-  
+
 // });
 
 const styles = StyleSheet.create({
