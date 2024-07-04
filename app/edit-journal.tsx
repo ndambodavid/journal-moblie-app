@@ -5,18 +5,18 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import axios from 'axios';
 
 type Journal = {
-  id: string;
-  title: string;
-  content: string;
-  category: string;
-  date: string;
+  id?: string;
+  title?: string;
+  content?: string;
+  category?: string;
+  date?: string;
 };
 
 const EditJournal = () => {
-  const { id, title, content, category, date } = useLocalSearchParams();
+  const { id, title, content, category, date }: Journal = useLocalSearchParams();
   const router = useRouter();
   const [journal, setJournal] = useState<Journal | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
 //   useEffect(() => {
@@ -63,27 +63,27 @@ const EditJournal = () => {
     );
   }
 
-  if (!journal) {
-    return (
-      <View style={styles.error}>
-        <Text style={styles.errorText}>Journal not found</Text>
-      </View>
-    );
-  }
+//   if (!journal) {
+//     return (
+//       <View style={styles.error}>
+//         <Text style={styles.errorText}>Journal not found</Text>
+//       </View>
+//     );
+//   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Title</Text>
       <TextInput
         style={styles.input}
-        value={journal.title}
+        value={title}
         onChangeText={(text) => setJournal({ ...journal, title: text })}
       />
 
       <Text style={styles.label}>Content</Text>
       <TextInput
         style={[styles.input, styles.textArea]}
-        value={journal.content}
+        value={content}
         onChangeText={(text) => setJournal({ ...journal, content: text })}
         multiline
         numberOfLines={4}
@@ -92,14 +92,14 @@ const EditJournal = () => {
       <Text style={styles.label}>Category</Text>
       <TextInput
         style={styles.input}
-        value={journal.category}
+        value={category}
         onChangeText={(text) => setJournal({ ...journal, category: text })}
       />
 
       <Text style={styles.label}>Date</Text>
       <TextInput
         style={styles.input}
-        value={journal.date}
+        value={date}
         onChangeText={(text) => setJournal({ ...journal, date: text })}
       />
 
