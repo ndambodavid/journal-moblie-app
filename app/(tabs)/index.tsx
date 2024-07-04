@@ -1,11 +1,33 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { Image, StyleSheet, Platform, View, FlatList, TouchableOpacity } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
+const journals = [
+  { id: '1', title: 'Journal 1' },
+  { id: '2', title: 'Journal 2' },
+  { id: '3', title: 'Journal 3' },
+  // Add more journals as needed
+];
+
 export default function HomeScreen() {
+
+  const renderItem = ({ item }: any) => (
+    <View style={styles.journalContainer}>
+      <ThemedText style={styles.journalTitle}>{item.title}</ThemedText>
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity style={styles.button}>
+          <ThemedText style={styles.buttonText}>Edit</ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button}>
+          <ThemedText style={styles.buttonText}>View</ThemedText>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -16,39 +38,23 @@ export default function HomeScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText type="title">My Journals</ThemedText>
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
+      <FlatList
+        data={journals}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+      />
       </ThemedView>
     </ParallaxScrollView>
   );
 }
+
+// const styles = StyleSheet.create({
+  
+// });
 
 const styles = StyleSheet.create({
   titleContainer: {
@@ -61,10 +67,44 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
+    // height: 178,
+    // width: 290,
+    // bottom: 0,
+    // left: 0,
     position: 'absolute',
+  },
+  //
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  journalContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  journalTitle: {
+    fontSize: 18,
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+  },
+  button: {
+    marginLeft: 8,
+    padding: 8,
+    backgroundColor: '#007BFF',
+    borderRadius: 4,
+  },
+  buttonText: {
+    color: '#fff',
   },
 });
