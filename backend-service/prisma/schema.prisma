@@ -41,6 +41,7 @@ model Journal {
   id        String   @id @unique @default(uuid())
   title     String
   Content   String
+  Category  Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   createdAt DateTime
   updatedAt DateTime @updatedAt
 }

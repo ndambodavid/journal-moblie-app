@@ -152,7 +152,7 @@ export const loginUser = CatchAsyncError(async (req: Request, res: Response, nex
 
 //         const user = JSON.parse(session);
 
-//         const accessToken = jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN as string, {
+//         const accessToken = jwt.sign({ id: user._id }, process.env.JWT_ACCESS_SECRET as string, {
 //             expiresIn: "5m"
 //         });
 
