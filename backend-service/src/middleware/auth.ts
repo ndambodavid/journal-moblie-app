@@ -38,23 +38,23 @@ export const isAuthenticated = CatchAsyncError(async (req: Request, res: Respons
     // });
 
     // redis
-    const user = await redis.get(decoded.id);
-    console.log(user)
-    if (user !== null) {
-        req.user = JSON.parse(user);
-    } else if(user === null) {
-        return next(new Errorhandler("NO USER SESSION FOUND", 404));
-    }
+    // const user = await redis.get(decoded.id);
+    // console.log(user)
+    // if (user !== null) {
+    //     req.user = JSON.parse(user);
+    // } else if(user === null) {
+    //     return next(new Errorhandler("NO USER SESSION FOUND", 404));
+    // }
 
     next();
 });
 
 //validate user role
-export const authorizeRoles = (...roles: string[]) => {
-    return (req: Request, res: Response, next: NextFunction) => {
-        if(!roles.includes(req.user?.role || '')){
-            return next(new Errorhandler(`Role: ${req.user?.role} is not allowed to access this resource`, 403));
-        }
-        next();
-    }
-}
+// export const authorizeRoles = (...roles: string[]) => {
+//     return (req: Request, res: Response, next: NextFunction) => {
+//         if(!roles.includes(req.user?.role || '')){
+//             return next(new Errorhandler(`Role: ${req.user?.role} is not allowed to access this resource`, 403));
+//         }
+//         next();
+//     }
+// }

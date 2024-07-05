@@ -1,30 +1,50 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
-
+import cookieParser from 'cookie-parser';
 import * as middlewares from './middlewares';
 import api from './api';
 import MessageResponse from './interfaces/MessageResponse';
+import { ErrorMiddleware } from './middleware/error';
 
 require('dotenv').config();
 
+// server
 const app = express();
+
+// body parser
+app.use(express.json({ limit: "50mb" }));
+
+// cookie parser
+app.use(cookieParser());
 
 app.use(morgan('dev'));
 app.use(helmet());
-app.use(cors());
-app.use(express.json());
 
-app.get<{}, MessageResponse>('/', (req, res) => {
-  res.json({
+// cors => cross origin resource sharing
+app.use(cors({
+  origin: ['http://localhost:3000'],
+  credentials: true,
+}));
+
+app.use('/api/v1', api);
+
+app.get('/checkmate', (req: Request, res: Response, next: NextFunction) => {
+  res.status(200).json({
+    success: true,
     message: '✨👋🌎Fantastic! ✨ Your Journal API is ready 🌈🦄',
   });
 });
 
-app.use('/api/v1', api);
 
-app.use(middlewares.notFound);
-app.use(middlewares.errorHandler);
+// unknown route
+app.all("*", (req: Request, res: Response, next: NextFunction) => {
+  const err = new Error(`Route ${req.originalUrl} not found`) as any;
+  err.statusCode = 404;
+  next(err);
+})
+
+app.use(ErrorMiddleware);
 
 export default app;
