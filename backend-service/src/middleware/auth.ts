@@ -13,7 +13,7 @@ export const isAuthenticated = CatchAsyncError(async (req: Request, res: Respons
         return next(new Errorhandler("Please login to access this reasource", 400));
     }
 
-    const decoded = jwt.verify(access_token, process.env.ACCESS_TOKEN as string) as JwtPayload;
+    const decoded = jwt.verify(access_token, process.env.JWT_ACCESS_SECRET as string) as JwtPayload;
     console.log(decoded);
 
     if (!decoded) {

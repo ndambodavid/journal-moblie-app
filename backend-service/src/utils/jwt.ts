@@ -2,6 +2,8 @@ import { NextFunction, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from 'dotenv';
 import { User } from '@prisma/client';
+import { uuid } from "uuidv4"
+import { addRefreshTokenToWhitelist } from '../services/auth.service';
 config();
 
 interface TokenOptions {
@@ -48,7 +50,7 @@ export function generateAccessToken(user: User) {
    * @param jti 
    * @returns 
    */
-  export function generateRefreshToken(user: User, jti) {
+  export function generateRefreshToken(user: User, jti: string) {
     return jwt.sign({
       userId: user.id,
       jti
@@ -63,7 +65,7 @@ export function generateAccessToken(user: User) {
    * @param jti 
    * @returns 
    */
-  export function generateTokens(user: User, jti) {
+  export function generateTokens(user: User, jti: string) {
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user, jti);
   
@@ -74,38 +76,39 @@ export function generateAccessToken(user: User) {
   }
 
 
-// export const sendToken = async (user: User, statusCode: number, res: Response) => {
-//     const accessToken = user.signAccessToken();
-//     const refreshToken = user.signRefreshToken();
+export const sendToken = async (user: User, statusCode: number, res: Response) => {
+    const jti = uuid();
+    const { accessToken, refreshToken } = generateTokens(user, jti);
+    await addRefreshTokenToWhitelist({ jti, refreshToken, userId: user.id });
 
-//     // upload session to Cache
-//     // memecached client
+    // upload session to Cache
+    // memecached client
 
-//     // memcache.set(JSON.stringify(user._id), JSON.stringify(user), {expires: 60}, (err, val) => {
-//     //     if (err) {
-//     //         return next(new Errorhandler(`${err}`, 400));
-//     //     }
+    // memcache.set(JSON.stringify(user._id), JSON.stringify(user), {expires: 60}, (err, val) => {
+    //     if (err) {
+    //         return next(new Errorhandler(`${err}`, 400));
+    //     }
 
-//     //     if (val) {
-//     //         console.log(val);
-//     //     }
-//     // });
+    //     if (val) {
+    //         console.log(val);
+    //     }
+    // });
 
-//     // redis client
-//     const session = await redis.set(user._id, JSON.stringify(user), "EX", 300);
-//     // console.log(session);
+    // redis client
+    // const session = await redis.set(user._id, JSON.stringify(user), "EX", 300);
+    // console.log(session);
     
-//     // only set secure to true in production
-//     if (process.env.NODE_ENV === 'production') {
-//         accessTokenOptions.secure = true;
-//     }
+    // only set secure to true in production
+    if (process.env.NODE_ENV === 'production') {
+        accessTokenOptions.secure = true;
+    }
 
-//     res.cookie("access_token", accessToken, accessTokenOptions);
-//     res.cookie("refresh_token", refreshToken, refreshTokenOptions);
+    res.cookie("access_token", accessToken, accessTokenOptions);
+    res.cookie("refresh_token", refreshToken, refreshTokenOptions);
 
-//     res.status(statusCode).json({
-//         success: true,
-//         user,
-//         accessToken
-//     })
-// }
+    res.status(statusCode).json({
+        success: true,
+        user,
+        accessToken
+    })
+}
