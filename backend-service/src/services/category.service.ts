@@ -6,7 +6,7 @@ import db from "../utils/db";
  * @returns 
  */
 export function findCategoryByName(name: string) {
-    return db.user.findUnique({
+    return db.category.findFirst({
       where: {
         name,
       },
