@@ -31,13 +31,13 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <NavigationContainer>
+        <NavigationContainer independent={true}>
           <Stack>
             {authState?.authenticated ? (
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               // <Stack.Screen name="+not-found" />
             ) : (
-              <Stack.Screen name="login"/>
+              <Stack.Screen name="login" options={{ headerShown: false }}/>
             )}
           </Stack>
         </NavigationContainer>
