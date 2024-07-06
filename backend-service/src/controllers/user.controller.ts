@@ -18,7 +18,7 @@ interface RegisterBody {
 export const registerUser = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
         // extract credentials from request body
-        const { email, password } = req.body;
+        const { email, password } = req.body as RegisterBody;
 
         // validate that user credentials are not null
         if (!email || !password) {
@@ -45,7 +45,6 @@ export const registerUser = CatchAsyncError(async (req: Request, res: Response, 
 });
 
 
-//login user
 interface LoginRequest {
     email: string;
     password: string;

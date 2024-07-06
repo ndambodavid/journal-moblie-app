@@ -8,6 +8,7 @@ import api from './api';
 import MessageResponse from './interfaces/MessageResponse';
 import { ErrorMiddleware } from './middleware/error';
 import userRouter from './routes/user.router';
+import journalRouter from './routes/journal.route';
 
 require('dotenv').config();
 
@@ -32,6 +33,8 @@ app.use(cors({
 app.use('/api/v1', api);
 
 app.use('/api', userRouter);
+
+app.use('/api', journalRouter);
 
 app.get('/checkmate', (req: Request, res: Response, next: NextFunction) => {
   res.status(200).json({

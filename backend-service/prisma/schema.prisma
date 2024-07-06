@@ -35,12 +35,14 @@ model RefreshToken {
 model Category {
   id   String @id @unique @default(uuid())
   name String
+  journals Journal[]
 }
 
 model Journal {
   id        String   @id @unique @default(uuid())
   title     String
   Content   String
+  categoryId String
   Category  Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   createdAt DateTime
   updatedAt DateTime @updatedAt
