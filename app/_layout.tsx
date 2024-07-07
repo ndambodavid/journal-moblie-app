@@ -2,11 +2,18 @@ import { DarkTheme, DefaultTheme, NavigationContainer, ThemeProvider } from '@re
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import axios from 'axios';
+import * as SecureStore from 'expo-secure-store';
+import Button from '@/components/Button';
+import { ScreenStack } from 'react-native-screens';
+
+
+const TOKEN_KEY = 'my-jwt';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -16,13 +23,14 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
-  const {authState, onLogout} = useAuth()
+  const { authState, onLogout } = useAuth();
 
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+
+  }, [loaded, authState]);
 
   if (!loaded) {
     return null;
@@ -31,16 +39,16 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <NavigationContainer independent={true}>
-          <Stack>
+        {/* <NavigationContainer independent={true}> */}
+          <Stack screenOptions={{ headerShown: false}}>
             {authState?.authenticated ? (
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              // <Stack.Screen name="+not-found" />
+                <Stack.Screen name="(tabs)"  options={{headerRight: () => <Button title="logout" onPress={onLogout}/>}}/>
+                // <Stack.Screen name="+not-found" />
             ) : (
-              <Stack.Screen name="login" options={{ headerShown: false }}/>
+                <Stack.Screen name="login"  />
             )}
           </Stack>
-        </NavigationContainer>
+        {/* </NavigationContainer> */}
 
       </ThemeProvider>
     </AuthProvider>

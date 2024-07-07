@@ -4,49 +4,39 @@ import { View, Text, TextInput, StyleSheet, ActivityIndicator } from 'react-nati
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import axios from 'axios';
 import Button from '@/components/Button';
+import { API_URL } from './context/AuthContext';
 
 type Journal = {
   id?: string;
   title?: string;
   content?: string;
-  category?: string;
-  date?: string;
+  categoryName?: string;
+  createdAt?: string;
 };
 
 const EditJournal = () => {
-  const { id, title, content, category, date }: Journal = useLocalSearchParams();
+  const { id, title, content, categoryName, createdAt }: Journal = useLocalSearchParams();
   const router = useRouter();
-  const [journal, setJournal] = useState<Journal | null>(null);
+  const [newTitle, setTitle] = useState(title);
+  const [newContent, setContent] = useState(content);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-//   useEffect(() => {
-//     if (id) {
-//       axios
-//         .get<Journal>(`https://api.example.com/journals/${id}`)
-//         .then((response) => {
-//           setJournal(response.data);
-//           setLoading(false);
-//         })
-//         .catch((err) => {
-//           setError(err.message);
-//           setLoading(false);
-//         });
-//     }
-//   }, [id]);
-
   const onSave = () => {
-    // if (journal) {
-    //   axios
-    //     .put(`https://api.example.com/journals/${id}`, journal)
-    //     .then(() => {
-    //       router.push('view-journal', { id });
-    //     })
-    //     .catch((err) => {
-    //       setError(err.message);
-    //     });
-    // }
+    updateJournal(id!, newTitle, newContent);
   };
+
+  const updateJournal = async (id: string, title?: string, content?: string) => {
+    try {
+      const result = await axios.put(`${API_URL}/journal`, { id, title, content });
+      console.log("update journal", result.data);
+      alert(result.data.message);
+      router.replace('/')
+    } catch (error: any) {
+      console.error("error journal", error.response.data)
+      return { error: true, msg: error.response.data }
+    }
+  }
 
   if (loading) {
     return (
@@ -64,44 +54,22 @@ const EditJournal = () => {
     );
   }
 
-//   if (!journal) {
-//     return (
-//       <View style={styles.error}>
-//         <Text style={styles.errorText}>Journal not found</Text>
-//       </View>
-//     );
-//   }
-
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Title</Text>
       <TextInput
         style={styles.input}
-        value={title}
-        onChangeText={(text) => setJournal({ ...journal, title: text })}
+        value={newTitle}
+        onChangeText={(text) => setTitle(text)}
       />
 
       <Text style={styles.label}>Content</Text>
       <TextInput
         style={[styles.input, styles.textArea]}
-        value={content}
-        onChangeText={(text) => setJournal({ ...journal, content: text })}
+        value={newContent}
+        onChangeText={(text) => setContent(text)}
         multiline
         numberOfLines={4}
-      />
-
-      <Text style={styles.label}>Category</Text>
-      <TextInput
-        style={styles.input}
-        value={category}
-        onChangeText={(text) => setJournal({ ...journal, category: text })}
-      />
-
-      <Text style={styles.label}>Date</Text>
-      <TextInput
-        style={styles.input}
-        value={date}
-        onChangeText={(text) => setJournal({ ...journal, date: text })}
       />
 
       <Button title="Update" onPress={onSave} />

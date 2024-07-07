@@ -2,26 +2,48 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import LoginScreen from 'react-native-login-screen'
 import { router } from 'expo-router';
+import { useAuth } from './context/AuthContext';
 
-const login = () => {
+const Login = () => {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
-    const [register, setRegister] = React.useState<boolean>(false);
+    const [registerUi, setRegisterUi] = React.useState<boolean>(false);
+    const {onLogin, onRegister} = useAuth();
+
+    const login = async () => {
+        const result = await onLogin!(email, password);
+        if (result && result.error) {
+            alert(result.msg);
+        }
+        if (result.success) {
+            alert("login successful")
+        }
+    }
+
+    // we automatically call the login after a successful registration
+    const register = async () => {
+        const result = await onRegister!(email, password);
+        if (result && result.error) {
+            alert(result.msg);
+        } else {
+            login();
+        }
+    }
 
     const updateUi = () => {
-        if (register) {
-            setRegister(false);
+        if (registerUi) {
+            setRegisterUi(false);
         } else {
-            setRegister(true);
+            setRegisterUi(true);
         }
     }
     return (
         <>
             {
-                register ? (
+                registerUi ? (
                     <LoginScreen
                         logoImageSource={require('@/assets/images/react-logo.png')}
-                        onLoginPress={() => { }}
+                        onLoginPress={() => register()}
                         onSignupPress={() => updateUi()}
                         signupText='Already have an account?'
                         loginButtonText='Register'
@@ -32,7 +54,7 @@ const login = () => {
                 ) : (
                     <LoginScreen
                         logoImageSource={require('@/assets/images/react-logo.png')}
-                        onLoginPress={() => { }}
+                        onLoginPress={() => login()}
                         onSignupPress={() => updateUi()}
                         disableSocialButtons={true}
                         onEmailChange={setEmail}
@@ -45,4 +67,4 @@ const login = () => {
     )
 }
 
-export default login
+export default Login

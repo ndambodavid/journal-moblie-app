@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { CatchAsyncError } from "../middleware/AsyncErrors";
 import Errorhandler from "../utils/ErrorHandler";
-import { createJournal, findAllJournals } from "../services/journal.service";
+import { createJournal, findAllJournals, editJournal } from "../services/journal.service";
 
 
 export const addJournal = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -26,8 +26,32 @@ export const addJournal = CatchAsyncError(async (req: Request, res: Response, ne
     }
 });
 
+export const updateJournal = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // extract journal data from request body
+        const {id, title, content, categoryName} = req.body;
+
+        // validate journal data
+        if (!id ||!title || !content) {
+            return next(new Errorhandler(" One or more fields missing.", 400))
+        }
+
+        // update journal
+        await editJournal({id, title, content});
+
+        res.status(200).json({
+            succes: true,
+            message: 'Journal updated successfully'
+        })
+    } catch (error: any) {
+        return next(new Errorhandler(error.message, 400));
+    }
+});
+
 export const getAllJournals = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
+        console.log("header", req.headers);
+        
         // get journals
         let journals = await findAllJournals();
 

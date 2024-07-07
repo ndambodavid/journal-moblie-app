@@ -43,3 +43,7 @@ export function findUserById(id: string) {
     },
   });
 }
+
+export function findAllUser() {
+  return db.user.findMany()
+}

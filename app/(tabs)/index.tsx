@@ -6,22 +6,28 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Button from '@/components/Button';
 import { router } from 'expo-router';
-import { ScrollView } from 'react-native-gesture-handler';
-
-const journals = [
-  { id: '1', title: 'Journal 1', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
-  { id: '2', title: 'Journal 2', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
-  { id: '3', title: 'Journal 3', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
-  { id: '4', title: 'Journal 1', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
-  { id: '5', title: 'Journal 2', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
-  { id: '6', title: 'Journal 3', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
-  { id: '7', title: 'Journal 1', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
-  { id: '8', title: 'Journal 2', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
-  { id: '9', title: 'Journal 3', content: 'Content 1', category: 'Category 1', date: '2023-07-04' },
-  // Add more journals as needed
-];
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { API_URL } from '../context/AuthContext';
 
 export default function HomeScreen() {
+  const [journals, setJournals] = useState();
+
+  useEffect(() => {
+    const fetchJournals = async () => {
+      try {
+        const result = await axios.get(`${API_URL}/journal`);
+        console.log("result journals", result.data);
+        setJournals(result.data.data)
+      } catch (error: any) {
+        console.error("error journal", error.response.data)
+        return { error: true, msg: error.response.data }
+      }
+    }
+  
+    fetchJournals();
+  }, [])
+  
 
   const renderItem = ({ item }: any) => (
     <View style={styles.journalContainer}>
@@ -57,7 +63,7 @@ export default function HomeScreen() {
         <FlatList
           data={journals}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item?.id}
           scrollEnabled={false}
         />
       </ThemedView>

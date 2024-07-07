@@ -10,7 +10,7 @@ interface AuthProps {
 }
 
 const TOKEN_KEY = 'my-jwt';
-export const API_URL = 'http://localhost:5000/api';
+export const API_URL = 'http://192.168.81.185:5000/api';
 const AuthContext = createContext<AuthProps>({});
 
 export const useAuth = () => {
@@ -49,16 +49,18 @@ export const AuthProvider = ({ children }: any) => {
 
     const register = async (email: string, password: string) => {
         try {
-            return await axios.post(`${API_URL}/register`, { email, password });
+            return await axios.post(`${API_URL}/user/register`, { email, password });
         } catch (error: any) {
             return { error: true, msg: (error).response.data.msg }
         }
     }
 
     const login = async (email: string, password: string) => {
+        
         try {
-            const result = await axios.post(`${API_URL}/login`, { email, password });
-
+            const result = await axios.post(`${API_URL}/user/login`, { email, password });
+            console.log("result login", result.data);
+            
             setAuthState({
                 token: result.data.accessToken,
                 authenticated: true
@@ -66,11 +68,13 @@ export const AuthProvider = ({ children }: any) => {
 
             axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.accessToken}`;
 
-            await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
+            await SecureStore.setItemAsync(TOKEN_KEY, result.data.accessToken);
 
-            return result;
+            return result.data;
         } catch (error: any) {
-            return { error: true, msg: (error).response.data.msg }
+            console.error("Error login", error.message);
+            
+            return { error: true, msg: error.response.data.message }
         }
     }
 

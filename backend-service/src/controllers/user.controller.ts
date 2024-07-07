@@ -2,8 +2,8 @@ import { Request, Response, NextFunction, request } from "express";
 import Errorhandler from "../utils/ErrorHandler";
 import { CatchAsyncError } from "../middleware/AsyncErrors";
 import jwt, { JwtPayload, Secret } from "jsonwebtoken";
-import { accessTokenOptions, refreshTokenOptions, sendToken } from "../utils/jwt";
-import { createUserByEmailAndPassword, findUserByEmail } from "../services/user.service";
+import { sendToken } from "../utils/jwt";
+import { createUserByEmailAndPassword, findAllUser, findUserByEmail } from "../services/user.service";
 import bycryt from "bcrypt";
 
 // register user
@@ -72,6 +72,18 @@ export const loginUser = CatchAsyncError(async (req: Request, res: Response, nex
         }
 
         sendToken(existingUser, 200, res);
+    } catch (error: any) {
+        return next(new Errorhandler(error.message, 400))
+    }
+});
+
+export const getAllUsers = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        let users = await findAllUser();
+        res.status(200).json({
+            success: true,
+            users: users
+        })
     } catch (error: any) {
         return next(new Errorhandler(error.message, 400))
     }

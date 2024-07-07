@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
 const ViewJournal = () => {
-  const { title, content, category, date } = useLocalSearchParams();
+  const { title, content, categoryName, createdAt } = useLocalSearchParams();
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -15,10 +15,10 @@ const ViewJournal = () => {
       <Text style={styles.text}>{content}</Text>
 
       <Text style={styles.label}>Category</Text>
-      <Text style={styles.text}>{category}</Text>
+      <Text style={styles.text}>{categoryName}</Text>
 
       <Text style={styles.label}>Date</Text>
-      <Text style={styles.text}>{date}</Text>
+      <Text style={styles.text}>{createdAt?.toLocaleString()}</Text>
     </ScrollView>
   );
 };

@@ -43,6 +43,7 @@ model Journal {
   title     String
   content   String
   categoryId String
+  categoryName String @default("")
   Category  Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   createdAt DateTime
   updatedAt DateTime @updatedAt

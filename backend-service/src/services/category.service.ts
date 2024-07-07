@@ -21,7 +21,7 @@ export function findCategoryByName(name: string) {
 export function createCategory(name: string) {
     return db.category.create({
         data: {
-            name: name
+            name
         }
     });
 }

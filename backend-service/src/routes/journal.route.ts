@@ -1,12 +1,14 @@
 import express from "express";
-import { addJournal, getAllJournals } from "../controllers/journal.controller";
+import { addJournal, getAllJournals, updateJournal } from "../controllers/journal.controller";
 
 
 // journal router
 const journalRouter = express.Router();
 
-journalRouter.post('/journal', addJournal);
+journalRouter.post('/', addJournal);
 
-journalRouter.get('/journal', getAllJournals);
+journalRouter.get('/', getAllJournals);
+
+journalRouter.put('/', updateJournal)
 
 export default journalRouter;
