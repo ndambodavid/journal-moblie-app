@@ -24,13 +24,28 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
   const { authState, onLogout } = useAuth();
+  const [token, setToken] = useState<string | null>();
+
+  const logout = async () => {
+    await onLogout!()
+  }
 
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
     }
 
-  }, [loaded, authState]);
+    const loadToken = async () => {
+      const token = await SecureStore.getItemAsync(TOKEN_KEY);
+      setToken(token)
+      if (token) {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      }
+
+    }
+    loadToken()
+
+  }, [loaded]);
 
   if (!loaded) {
     return null;
@@ -40,14 +55,17 @@ export default function RootLayout() {
     <AuthProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         {/* <NavigationContainer independent={true}> */}
-          <Stack screenOptions={{ headerShown: false}}>
-            {authState?.authenticated ? (
-                <Stack.Screen name="(tabs)"  options={{headerRight: () => <Button title="logout" onPress={onLogout}/>}}/>
+            <Stack screenOptions={{ headerShown: false}}>
+              {token ? (
+
+                <Stack.Screen name="(tabs)" options={{}} />
+
                 // <Stack.Screen name="+not-found" />
-            ) : (
-                <Stack.Screen name="login"  />
-            )}
-          </Stack>
+              ) : (
+                <Stack.Screen name="login" />
+
+              )}
+            </Stack>
         {/* </NavigationContainer> */}
 
       </ThemeProvider>

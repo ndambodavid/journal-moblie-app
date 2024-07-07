@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }: any) => {
             const token = await SecureStore.getItemAsync(TOKEN_KEY);
             console.log('====================================');
             console.log('stored token', token);
+            console.log("state", authState)
             console.log('====================================');
 
             if (token) {
@@ -69,7 +70,8 @@ export const AuthProvider = ({ children }: any) => {
             axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.accessToken}`;
 
             await SecureStore.setItemAsync(TOKEN_KEY, result.data.accessToken);
-
+            console.log("auth state", authState);
+            
             return result.data;
         } catch (error: any) {
             console.error("Error login", error.message);

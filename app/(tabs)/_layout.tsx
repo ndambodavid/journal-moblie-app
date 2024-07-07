@@ -4,15 +4,23 @@ import React from 'react';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import Button from '@/components/Button';
+import { useAuth } from '../context/AuthContext';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const {onLogout} = useAuth()
+
+  const logout = async () => {
+    await onLogout!()
+  }
 
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
+        headerShown: true,
+        headerRight: () => <Button title="logout" onPress={() => logout()} />
       }}>
       <Tabs.Screen
         name="index"
@@ -26,9 +34,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Explore',
+          title: 'Account',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon name={focused ? 'menu' : 'menu-outline'} color={color} />
           ),
         }}
       />

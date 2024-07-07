@@ -17,6 +17,7 @@ const Login = () => {
         }
         if (result.success) {
             alert("login successful")
+            router.replace("(tabs)")
         }
     }
 
