@@ -1,14 +1,15 @@
 import express from "express";
 import { addJournal, getAllJournals, updateJournal } from "../controllers/journal.controller";
+import { isAuthenticated } from "../middleware/auth";
 
 
 // journal router
 const journalRouter = express.Router();
 
-journalRouter.post('/', addJournal);
+journalRouter.post('/', isAuthenticated, addJournal);
 
-journalRouter.get('/', getAllJournals);
+journalRouter.get('/', isAuthenticated, getAllJournals);
 
-journalRouter.put('/', updateJournal)
+journalRouter.put('/', isAuthenticated, updateJournal)
 
 export default journalRouter;

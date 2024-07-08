@@ -7,11 +7,44 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Button from '@/components/Button';
-import { useState } from 'react';
+import * as SecureStore from 'expo-secure-store';
+import { useEffect, useState } from 'react';
+import { CURRENT_USER, useAuth } from '../context/AuthContext';
+import { router } from 'expo-router';
 
-export default function TabTwoScreen() {
-  const [email, setEmail] = useState('email');
+
+
+export default async function TabTwoScreen() {
+    const [email, setEmail] = useState('email');
     const [password, setPassword] = useState('password');
+    const {onLogin, onRegister, onUpdate} = useAuth();
+    const { user } = await SecureStore.getItemAsync(CURRENT_USER);
+
+    // useEffect(() => {
+    //   const getUser =async () => {
+    //     const user = await SecureStore.getItemAsync(CURRENT_USER);
+    //     setUser(user)
+    //     setEmail(user.email);
+    //     setPassword(user.password);
+    //   }
+    //   getUser();
+    // }, []);
+
+
+    const update = async () => {
+        if (!user) {
+          alert("user not found")
+        }
+        const result = await onUpdate!(user.id, email, password);
+        if (result && result.error) {
+            alert(result.msg);
+        }
+        if (result.success) {
+            alert("user updated successfully")
+            router.replace("(tabs)")
+        }
+    }
+    
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
@@ -31,7 +64,7 @@ export default function TabTwoScreen() {
           onChangeText={(text) => setPassword(text)}
         />
 
-        <Button title="Update" onPress={() => {}} />
+        <Button title="Update" onPress={() => update()} />
       </ThemedView>
     </ParallaxScrollView>
   );

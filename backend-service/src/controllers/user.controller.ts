@@ -3,11 +3,12 @@ import Errorhandler from "../utils/ErrorHandler";
 import { CatchAsyncError } from "../middleware/AsyncErrors";
 import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import { sendToken } from "../utils/jwt";
-import { createUserByEmailAndPassword, findAllUser, findUserByEmail } from "../services/user.service";
+import { createUserByEmailAndPassword, findAllUser, findUserByEmail, updateUserEmailAndPassword } from "../services/user.service";
 import bycryt from "bcrypt";
 
 // register user
 interface RegisterBody {
+    id?: string
     name?: string;
     email: string;
     password: string;
@@ -86,6 +87,33 @@ export const getAllUsers = CatchAsyncError(async (req: Request, res: Response, n
         })
     } catch (error: any) {
         return next(new Errorhandler(error.message, 400))
+    }
+});
+
+export const updateUser = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // extract credentials from request body
+        const { id, email, password } = req.body as RegisterBody;
+
+        // validate that user credentials are not null
+        if (!email && !password) {
+            return next(new Errorhandler("You must provide an email or a password.", 400));
+        }
+
+        if (!id) {
+            return next(new Errorhandler("You must provide user id", 400));
+        }
+        // update user
+        const user = await updateUserEmailAndPassword({ id, email, password });
+
+        res.status(200).json({
+            success: true,
+            message: 'User updated successfully',
+            user: user
+        });
+
+    } catch (error: any) {
+        return next(new Errorhandler(error.message, 400));
     }
 });
 
