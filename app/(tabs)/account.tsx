@@ -15,36 +15,35 @@ import { router } from 'expo-router';
 
 
 export default async function TabTwoScreen() {
-    const [email, setEmail] = useState('email');
-    const [password, setPassword] = useState('password');
-    const {onLogin, onRegister, onUpdate} = useAuth();
-    const { user } = await SecureStore.getItemAsync(CURRENT_USER);
+  const [id, setId] = useState();
+  const [email, setEmail] = useState('email');
+  const [password, setPassword] = useState('password');
+  const { onLogin, onRegister, onUpdate } = useAuth();
 
-    // useEffect(() => {
-    //   const getUser =async () => {
-    //     const user = await SecureStore.getItemAsync(CURRENT_USER);
-    //     setUser(user)
-    //     setEmail(user.email);
-    //     setPassword(user.password);
-    //   }
-    //   getUser();
-    // }, []);
-
-
-    const update = async () => {
-        if (!user) {
-          alert("user not found")
-        }
-        const result = await onUpdate!(user.id, email, password);
-        if (result && result.error) {
-            alert(result.msg);
-        }
-        if (result.success) {
-            alert("user updated successfully")
-            router.replace("(tabs)")
-        }
+  useEffect(() => {
+    const getUser = async () => {
+      const user = await SecureStore.getItemAsync(CURRENT_USER);
+      if (user) {
+        setId(JSON.parse(user).id);
+        setEmail(JSON.parse(user).email);
+        setPassword(JSON.parse(user).password);
+      }
     }
-    
+    getUser();
+  }, []);
+
+
+  const update = async () => {
+    const result = await onUpdate!(id!, email, password);
+    if (result && result.error) {
+      alert(result.msg);
+    }
+    if (result.success) {
+      alert("user updated successfully")
+      router.replace("(tabs)")
+    }
+  }
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}

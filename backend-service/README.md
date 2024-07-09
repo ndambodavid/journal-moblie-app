@@ -11,7 +11,9 @@ git clone https://github.com/ndambodavid/journal-moblie-app.git
 ```sh
 cd backend-service
 ```
+## Copy the environment variables from ```.env.example``` to ```env``` file
 
+- Set the ```DATABASE_URL``` to your mysql connection url
 
 ## Install Dependecies
 
@@ -40,7 +42,7 @@ npm run dev
 
 # API Documentation
 
-- Endpoints are secured using JWT passed in the request cookies
+- Endpoints are secured using JWT passed in the request header (cookies)
 
 ## User Endpoints
 

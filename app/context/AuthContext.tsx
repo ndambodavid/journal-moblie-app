@@ -12,7 +12,8 @@ interface AuthProps {
 
 export const TOKEN_KEY = 'my-jwt';
 export const CURRENT_USER = 'user';
-export const API_URL = process.env.API_URI;
+// 'http://192.168.196.185:5000/api'
+export const API_URL = 'http://{hostname}:5000/api';
 const AuthContext = createContext<AuthProps>({});
 
 export const useAuth = () => {
@@ -34,7 +35,7 @@ export const AuthProvider = ({ children }: any) => {
             const user = await SecureStore.getItemAsync(CURRENT_USER);
             console.log('====================================');
             console.log('stored token', token);
-            console.log('stored user', user);
+            console.log('stored user', JSON.parse(user!));
             console.log('====================================');
 
             if (token) {
@@ -73,7 +74,7 @@ export const AuthProvider = ({ children }: any) => {
             axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.accessToken}`;
 
             await SecureStore.setItemAsync(TOKEN_KEY, result.data.accessToken);
-            await SecureStore.setItemAsync(CURRENT_USER, result.data.user);
+            await SecureStore.setItemAsync(CURRENT_USER, JSON.stringify(result.data.user));
             
             return result.data;
         } catch (error: any) {
@@ -102,15 +103,15 @@ export const AuthProvider = ({ children }: any) => {
     const logout = async () => {
         // delete token from storage
         await SecureStore.deleteItemAsync(TOKEN_KEY);
-
-        // update HTTP headers
-        axios.defaults.headers.common['Authorization'] = '';
-
+        await SecureStore.deleteItemAsync(CURRENT_USER);
+        
         // reset auth state
         setAuthState({
             token: null,
             authenticated: false
         })
+
+        return { success: true, msg: 'logged out' }
     }
 
     const value = {

@@ -1,4 +1,4 @@
-import { Tabs } from 'expo-router';
+import { Tabs, router } from 'expo-router';
 import React from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
@@ -12,7 +12,13 @@ export default function TabLayout() {
   const {onLogout} = useAuth()
 
   const logout = async () => {
-    await onLogout!()
+    const result = await onLogout!()
+    if (result && result.error) {
+      alert(result.msg);
+  }
+  if (result.success) {
+      router.replace("login")
+  }
   }
 
   return (
@@ -32,7 +38,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="account"
         options={{
           title: 'Account',
           tabBarIcon: ({ color, focused }) => (
